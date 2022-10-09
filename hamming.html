@@ -1,0 +1,90 @@
+<html>
+<head>
+     <title>Hamming Code</title>
+	 <script>
+		function code(){
+			let mes = document.getElementById('InputMessage').
+			value.split('');
+			for(let i = 0; i < mes.length; i++){
+				mes[i] = mes[i] * 1;
+				}
+			let controling = new Array();
+			controling.push((mes[0] + mes[1] + mes[3]) % 2);
+			controling.push((mes[1] + mes[2] + mes[3]) % 2);
+			controling.push((mes[0] + mes[2] + mes[3]) % 2);
+			document.getElementById('codedMessage').value = (mes.join('') + controling.join(''));
+		}
+   
+   
+		function decode(){
+			let codedMessaging = document.getElementById('codedMessage').value;
+			codedMessaging = codedMessaging.split('');
+			for(let i = 0; i < codedMessaging.length; i++)
+				codedMessaging[i] = codedMessaging[i] * 1;
+			let controle = new Array();
+			controle.push((codedMessaging[0] + codedMessaging[1] + codedMessaging[3])%2);
+			controle.push((codedMessaging[1] + codedMessaging[2] + codedMessaging[3])%2);
+			controle.push((codedMessaging[0] + codedMessaging[2] + codedMessaging[3])%2);
+
+			let indError = -1;
+			var errorOnFirstControlBit = false;
+			var errorOnSecondControlBit = false;
+			var errorOnThirdControlBit = false;
+			
+			if(controle[0] != codedMessaging[4]) {
+				if(controle[1] != codedMessaging[5]){
+					if(controle[2] != codedMessaging[6])
+							indError = 3;   
+					else 
+					        indError = 1;	
+				}else{
+					if(controle[2] != codedMessaging[6])
+					    indError = 0;	
+					else
+						indError = 4;
+				}
+			}else{
+				if(controle[1] != codedMessaging[5]){
+					if(controle[2] != codedMessaging[6])
+							indError = 2;
+					else
+						    indError = 5;
+				}else if(controle[2] != codedMessaging[6])
+					indError = 6;	
+		       }
+         
+			if(indError>3){
+				if(indError == 4)
+						document.getElementById('placeOfError').textContent = 'Error on first control bit';
+				else if(indError == 5)
+						document.getElementById('placeOfError').textContent = 'Error on second control bit';
+				else if (indError == 6)
+					document.getElementById('placeOfError').textContent = 'Error on third control bit';
+				
+			}else if (indError == -1)
+					document.getElementById('placeOfError').textContent = 'No errors found';
+		    else{
+			codedMessaging[indError] = (codedMessaging[indError]+1)%2; 
+			if (indError == 0)
+			document.getElementById('placeOfError').textContent = 'Error on first element';
+			else if (indError == 1)
+			document.getElementById('placeOfError').textContent = 'Error on second element';
+			else if (indError == 2)
+			document.getElementById('placeOfError').textContent = 'Error on third element';
+			else if (indError == 3)
+			document.getElementById('placeOfError').textContent = 'Error on fourth element';
+		}
+			document.getElementById('decodedMessage').value = codedMessaging[0]+''+codedMessaging[1]+''+codedMessaging[2]+''+codedMessaging[3];
+		}
+	 </script>
+</head>
+<body>
+<h1>My Hamming Code</h1>
+<p> <input type='text' id='InputMessage'> four bites to code </p>
+	<p> <input type='button' value='code' onClick='code()'> </p>
+	<p> <input type='text' id='codedMessage'> encoded string (message)</p>
+	<p> <input type='button' value='decode' onClick='decode()'> </p>
+	<p> <input type='text' id='decodedMessage'> decoded string (message) </p>
+	<p> <span id='placeOfError'> </span></p>
+</body>
+</html>
